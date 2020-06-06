@@ -1,0 +1,39 @@
+import React from 'react';
+import { Slide } from '../Transition';
+import DrawerBase from './DrawerBase';
+import { DrawerContext } from './context';
+
+const Drawer = ({
+  context: Context = DrawerContext,
+  isOpen,
+  onClose,
+  isFullHeight,
+  placement = 'right',
+  size = 'md',
+  children,
+  closeOnOutsideClick = true,
+  ...props
+}) => {
+  return (
+    <Slide
+      in={isOpen}
+      from={placement}
+      finalHeight={isFullHeight ? '100vh' : 'auto'}
+    >
+      {styles => (
+        <Context.Provider value={{ styles, size }}>
+          <DrawerBase
+            isOpen={true}
+            onClose={onClose}
+            closeOnOutsideClick={closeOnOutsideClick}
+            {...props}
+          >
+            {children}
+          </DrawerBase>
+        </Context.Provider>
+      )}
+    </Slide>
+  );
+};
+
+export default Drawer;

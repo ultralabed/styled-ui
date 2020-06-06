@@ -1,26 +1,35 @@
 import React, { forwardRef } from 'react';
-import wrapEvent from '../utils/wrapEvent';
 import Box from '../Box';
+import useColorMode from '../useColorMode';
 import { useModal } from './context';
 
 const ModalOverlay = forwardRef((props, ref) => {
-  const { disableOverlay } = useModal();
-  const _opacity = disableOverlay ? 0 : 0.7;
-  const _bg = `rgba(0, 0, 0, ${_opacity})`;
+  const { colorMode } = useColorMode();
+  const {
+    onClose,
+    closeOnOverlayClick,
+  } = useModal();
+  const backgroundColor = {
+    dark: 'rgba(0, 0, 0, .7)', // TBD
+    light: 'rgba(0, 0, 0, .7)', // TBD: light mode is not defined yet
+  }[colorMode];
 
   return (
     <Box
+      ref={ref}
       position="fixed"
-      bg={_bg}
       left="0"
       top="0"
-      w="100vw"
-      h="100vh"
-      ref={ref}
+      width="100vw"
+      height="100vh"
+      backgroundColor={backgroundColor}
       zIndex="modal"
-      onClick={wrapEvent(props.onClick, event => {
+      onClick={event => {
         event.stopPropagation();
-      })}
+        if (closeOnOverlayClick) {
+          onClose(event);
+        }
+      }}
       {...props}
     />
   );
